@@ -1,0 +1,45 @@
+import speech_recognition as sr
+
+
+def speech_to_text():
+    adLoop = True
+
+    detector = sr.Recognizer()
+    empty = " "
+
+    with sr.Microphone() as source:
+        detector.adjust_for_ambient_noise(source)
+        print("Please speak: ")
+        audio = detector.listen(source)
+        print("Recognizing...")
+        final_text = detector.recognize_google(audio)
+        empty += final_text
+        print(f"Converted speech: {empty}")
+
+        while adLoop:
+
+            print("Would you like to convert more words to text?: Y/N")
+            test_audio = detector.listen(source)
+            test_text = detector.recognize_google(test_audio)
+            if test_text == "yes":
+                adLoop = True
+                print("go on")
+                audio_two = detector.listen(source)
+                print("Recognizing...")
+                final_text_two = detector.recognize_google(audio_two)
+                empty = empty + " " + final_text_two
+                print(f"Current speech: {empty}")
+            elif test_text == "no":
+                adLoop = False
+            elif test_text != "yes" or "no":
+                print("Something went wrong...Please repeat(Answer Yes or No only)")
+                adLoop = True
+
+    print("Successful...", "\n", f"Your final text: {empty}")
+
+
+try:
+    speech_to_text()
+except:
+    print("Error, please retry")
+    speech_to_text()
